@@ -30,13 +30,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <onos.version>1.5.1</onos.version>
+        <api.version>1.0.0</api.version>
         <!-- Uncomment to generate ONOS app from this module.-->
         <onos.app.name>org.unl.cse.netgroup</onos.app.name>
         <onos.app.title>OpenSec ONOS Application</onos.app.title>
         <onos.app.origin>Netgroup, University of Nebraska-Lincoln
         </onos.app.origin>
         <onos.app.category>default</onos.app.category>
+        <api.description>Sample application REST API</api.description>
+        <web.context>/onos/OpenSec</web.context>
+        <api.title>Sample app REST API</api.title>
         <onos.app.url>http://cse.unl.edu/~netgroup</onos.app.url>
+        <api.package>org.unl.cse.netgroup</api.package>
         <onos.app.readme>OpenSec ONOS OSGi bundle.</onos.app.readme>
         <!-- End properties-->
     </properties>
@@ -96,6 +101,48 @@
             <version>3.0.5</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onosproject</groupId>
+            <artifactId>onos-rest</artifactId>
+            <version>${onos.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <version>1.19</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onosproject</groupId>
+            <artifactId>onlab-rest</artifactId>
+            <version>${onos.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -105,6 +152,39 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>3.0.1</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <_wab>src/main/webapp/</_wab>
+                        <Include-Resource>
+                            WEB-INF/classes/apidoc/swagger.json=target/swagger.json,
+                            {maven-resources}
+                        </Include-Resource>
+                        <Bundle-SymbolicName>
+                            ${project.groupId}.${project.artifactId}
+                        </Bundle-SymbolicName>
+                        <Import-Package>org.slf4j,
+                            org.osgi.framework,
+                            javax.ws.rs,
+                            javax.ws.rs.core,
+                            com.sun.jersey.api.core,
+                            com.sun.jersey.spi.container.servlet,
+                            com.sun.jersey.server.impl.container.servlet,
+                            com.fasterxml.jackson.databind,
+                            com.fasterxml.jackson.databind.node,
+                            com.fasterxml.jackson.core,
+                            org.apache.karaf.shell.commands,
+                            org.apache.karaf.shell.console,
+                            com.google.common.*,
+                            org.onlab.packet.*,
+                            org.onlab.rest.*,
+                            org.onlab.osgi.*,
+                            org.onlab.util.*,
+                            org.onosproject.*,
+                            org.jboss.netty.util.*
+                        </Import-Package>
+                        <Web-ContextPath>${web.context}</Web-ContextPath>
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

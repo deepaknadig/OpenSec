@@ -14,7 +14,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.unl.cse.netgroup</groupId>
@@ -22,16 +24,17 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <description>ONOS OSGi bundle archetype</description>
-    <url>http://onosproject.org</url>
+    <description>OpenSec ONOS OSGi App Bundle</description>
+    <url>http://cse.unl.edu/~netgroup</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <onos.version>1.6.0</onos.version>
+        <onos.version>1.5.1</onos.version>
         <!-- Uncomment to generate ONOS app from this module.-->
         <onos.app.name>org.unl.cse.netgroup</onos.app.name>
         <onos.app.title>OpenSec ONOS Application</onos.app.title>
-        <onos.app.origin>Netgroup, University of Nebraska-Lincoln</onos.app.origin>
+        <onos.app.origin>Netgroup, University of Nebraska-Lincoln
+        </onos.app.origin>
         <onos.app.category>default</onos.app.category>
         <onos.app.url>http://cse.unl.edu/~netgroup</onos.app.url>
         <onos.app.readme>OpenSec ONOS OSGi bundle.</onos.app.readme>
@@ -70,6 +73,27 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr.annotations</artifactId>
             <version>1.9.12</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onosproject</groupId>
+            <artifactId>onos-cli</artifactId>
+            <version>${onos.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.console</artifactId>
+            <version>3.0.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

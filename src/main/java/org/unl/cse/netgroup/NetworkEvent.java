@@ -11,5 +11,9 @@ public class NetworkEvent extends AbstractEvent<NetworkEvent.Type, String> {
         super(type, subject);
     }
 
-    public enum Type {}
+    public enum Type {
+        NETWORK_ADDED,
+        NETWORK_REMOVED,
+        NETWORK_UPDATED
+    }
 }

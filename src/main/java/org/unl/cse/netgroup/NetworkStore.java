@@ -1,13 +1,14 @@
 package org.unl.cse.netgroup;
 
 import org.onosproject.net.HostId;
+import org.onosproject.store.Store;
 
 import java.util.Set;
 
 /**
  * Created by dna on 7/12/16.
  */
-public interface NetworkStore {
+public interface NetworkStore extends Store<NetworkEvent, NetworkStoreDelegate> {
 
     /**
      * Create a named network.

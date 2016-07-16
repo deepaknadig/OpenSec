@@ -46,7 +46,7 @@ public interface NetworkStore extends Store<NetworkEvent, NetworkStoreDelegate> 
      * @param network network name
      * @param hostId host id
      */
-    void removeHost(String network, HostId hostId);
+    boolean removeHost(String network, HostId hostId);
 
     /**
      * Returns all the hosts in a network.

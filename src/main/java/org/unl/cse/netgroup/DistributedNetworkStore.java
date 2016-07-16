@@ -1,6 +1,7 @@
 package org.unl.cse.netgroup;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.unl.cse.netgroup.NetworkEvent.Type.*;
 
 /**
  * Created by dna on 7/14/16.
@@ -34,6 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class DistributedNetworkStore
         extends AbstractStore<NetworkEvent, NetworkStoreDelegate>
         implements NetworkStore {
+
     private static Logger log = LoggerFactory.getLogger(DistributedNetworkStore.class);
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
@@ -81,12 +84,12 @@ public class DistributedNetworkStore
 
     @Override
     public void putNetwork (String network) {
-
+        networks.putIfAbsent(network, Sets.newHashSet());
     }
 
     @Override
     public void removeNetwork(String network) {
-
+        networks.remove(network);
     }
 
     @Override
@@ -96,12 +99,30 @@ public class DistributedNetworkStore
 
     @Override
     public boolean addHost(String network, HostId hostId) {
+        if (getHosts(network).contains(hostId)) {
+            return false;
+        }
+        networks.computeIfPresent(network,
+                                  (k, v) -> {
+                                      Set<HostId> result = Sets.newHashSet(v);
+                                      result.add(hostId);
+                                      return result;
+                                  });
         return true;
     }
 
     @Override
-    public void removeHost(String network, HostId hostId) {
-
+    public boolean removeHost(String network, HostId hostId) {
+        if (!getHosts(network).contains(hostId)) {
+            return false;
+        }
+        networks.computeIfPresent(network,
+                                  (k, v) -> {
+                                      Set<HostId> result = Sets.newHashSet(v);
+                                      result.add(hostId);
+                                      return result;
+                                  });
+        return true;
     }
 
     @Override
@@ -114,7 +135,20 @@ public class DistributedNetworkStore
     private class InternalListener implements MapEventListener<String, Set<HostId>> {
         @Override
         public void event(MapEvent<String, Set<HostId>> event) {
-
+            final NetworkEvent.Type type;
+            switch (event.type()) {
+                case INSERT:
+                    type = NETWORK_ADDED;
+                    break;
+                case UPDATE:
+                    type = NETWORK_UPDATED;
+                    break;
+                case REMOVE:
+                default:
+                    type = NETWORK_REMOVED;
+                    break;
+            }
+            notifyDelegate(new NetworkEvent(type, event.key()));
         }
     }
 }

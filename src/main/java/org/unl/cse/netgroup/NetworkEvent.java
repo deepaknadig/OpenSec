@@ -1,7 +1,6 @@
 package org.unl.cse.netgroup;
 
 import org.onosproject.event.AbstractEvent;
-import org.onosproject.event.Event;
 
 /**
  * Created by dna on 7/12/16.

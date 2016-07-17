@@ -119,7 +119,7 @@ public class DistributedNetworkStore
         networks.computeIfPresent(network,
                                   (k, v) -> {
                                       Set<HostId> result = Sets.newHashSet(v);
-                                      result.add(hostId);
+                                      result.remove(hostId);
                                       return result;
                                   });
         return true;

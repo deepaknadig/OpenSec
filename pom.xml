@@ -102,51 +102,51 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.7.0</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--<artifactId>jackson-databind</artifactId>-->
+            <!--<version>2.7.0</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.onosproject</groupId>
-            <artifactId>onos-rest</artifactId>
-            <version>${onos.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.onosproject</groupId>-->
+            <!--<artifactId>onos-rest</artifactId>-->
+            <!--<version>${onos.version}</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-servlet</artifactId>
-            <version>1.19</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.sun.jersey</groupId>-->
+            <!--<artifactId>jersey-servlet</artifactId>-->
+            <!--<version>1.19</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.7.0</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--<artifactId>jackson-annotations</artifactId>-->
+            <!--<version>2.7.0</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>javax.ws.rs</groupId>-->
+            <!--<artifactId>jsr311-api</artifactId>-->
+            <!--<version>1.1.1</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.onosproject</groupId>
-            <artifactId>onlab-rest</artifactId>
-            <version>${onos.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.onosproject</groupId>-->
+            <!--<artifactId>onlab-rest</artifactId>-->
+            <!--<version>${onos.version}</version>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.onosproject</groupId>
             <artifactId>onos-core-serializers</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
+            <version>[1.5.0,1.6.0-SNAPSHOT)</version>
         </dependency>
     </dependencies>
 
@@ -157,39 +157,39 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>3.0.1</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <_wab>src/main/webapp/</_wab>
-                        <Include-Resource>
-                            WEB-INF/classes/apidoc/swagger.json=target/swagger.json,
-                            {maven-resources}
-                        </Include-Resource>
-                        <Bundle-SymbolicName>
-                            ${project.groupId}.${project.artifactId}
-                        </Bundle-SymbolicName>
-                        <Import-Package>org.slf4j,
-                            org.osgi.framework,
-                            javax.ws.rs,
-                            javax.ws.rs.core,
-                            com.sun.jersey.api.core,
-                            com.sun.jersey.spi.container.servlet,
-                            com.sun.jersey.server.impl.container.servlet,
-                            com.fasterxml.jackson.databind,
-                            com.fasterxml.jackson.databind.node,
-                            com.fasterxml.jackson.core,
-                            org.apache.karaf.shell.commands,
-                            org.apache.karaf.shell.console,
-                            com.google.common.*,
-                            org.onlab.packet.*,
-                            org.onlab.rest.*,
-                            org.onlab.osgi.*,
-                            org.onlab.util.*,
-                            org.onosproject.*,
-                            org.jboss.netty.util.*
-                        </Import-Package>
-                        <Web-ContextPath>${web.context}</Web-ContextPath>
-                    </instructions>
-                </configuration>
+                <!--<configuration>-->
+                    <!--<instructions>-->
+                        <!--<_wab>src/main/webapp/</_wab>-->
+                        <!--<Include-Resource>-->
+                            <!--WEB-INF/classes/apidoc/swagger.json=target/swagger.json,-->
+                            <!--{maven-resources}-->
+                        <!--</Include-Resource>-->
+                        <!--<Bundle-SymbolicName>-->
+                            <!--${project.groupId}.${project.artifactId}-->
+                        <!--</Bundle-SymbolicName>-->
+                        <!--<Import-Package>org.slf4j,-->
+                            <!--org.osgi.framework,-->
+                            <!--javax.ws.rs,-->
+                            <!--javax.ws.rs.core,-->
+                            <!--com.sun.jersey.api.core,-->
+                            <!--com.sun.jersey.spi.container.servlet,-->
+                            <!--com.sun.jersey.server.impl.container.servlet,-->
+                            <!--com.fasterxml.jackson.databind,-->
+                            <!--com.fasterxml.jackson.databind.node,-->
+                            <!--com.fasterxml.jackson.core,-->
+                            <!--org.apache.karaf.shell.commands,-->
+                            <!--org.apache.karaf.shell.console,-->
+                            <!--com.google.common.*,-->
+                            <!--org.onlab.packet.*,-->
+                            <!--org.onlab.rest.*,-->
+                            <!--org.onlab.osgi.*,-->
+                            <!--org.onlab.util.*,-->
+                            <!--org.onosproject.*,-->
+                            <!--org.jboss.netty.util.*-->
+                        <!--</Import-Package>-->
+                        <!--<Web-ContextPath>${web.context}</Web-ContextPath>-->
+                    <!--</instructions>-->
+                <!--</configuration>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

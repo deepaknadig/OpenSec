@@ -6,7 +6,7 @@
         <additionalProperties>
           <property key="Bundle-Description" value="OpenSec ONOS OSGi App Bundle" />
           <property key="-wab" value="src/main/webapp/" />
-          <property key="Include-Resource" value="WEB-INF/classes/apidoc/swagger.json=target/swagger.json,OSGI-INF/blueprint/shell-config.xml=$MODULE_DIR$/src/main/resources/OSGI-INF/blueprint/shell-config.xml" />
+          <property key="Include-Resource" value="WEB-INF/classes/apidoc/swagger.json=$MODULE_DIR$/target/swagger.json,OSGI-INF/blueprint/shell-config.xml=$MODULE_DIR$/src/main/resources/OSGI-INF/blueprint/shell-config.xml" />
           <property key="Import-Package" value="org.slf4j,org.osgi.framework,javax.ws.rs,javax.ws.rs.core,com.sun.jersey.api.core,com.sun.jersey.spi.container.servlet,com.sun.jersey.server.impl.container.servlet,com.fasterxml.jackson.databind,com.fasterxml.jackson.databind.node,com.fasterxml.jackson.core,org.apache.karaf.shell.commands,org.apache.karaf.shell.console,com.google.common.*,org.onlab.packet.*,org.onlab.rest.*,org.onlab.osgi.*,org.onlab.util.*,org.onosproject.*,org.jboss.netty.util.*" />
           <property key="Web-ContextPath" value="/onos/OpenSec" />
           <property key="Bundle-Name" value="OpenSec" />

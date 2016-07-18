@@ -3,6 +3,7 @@ package org.unl.cse.netgroup;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
@@ -14,6 +15,7 @@ import org.onosproject.core.CoreService;
 import org.onosproject.event.AbstractListenerManager;
 import org.onosproject.net.HostId;
 import org.onosproject.net.intent.Intent;
+import org.onosproject.net.intent.IntentService;
 import org.onosproject.net.intent.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,9 @@ import static java.lang.String.format;
 @Component(immediate = true)
 @Service
 
-public class NetworkManager extends AbstractListenerManager<NetworkEvent, NetworkListener> implements NetworkService {
+public class NetworkManager
+        extends AbstractListenerManager<NetworkEvent, NetworkListener>
+        implements NetworkService {
     private static Logger log = LoggerFactory.getLogger(NetworkManager.class);
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
@@ -40,17 +44,40 @@ public class NetworkManager extends AbstractListenerManager<NetworkEvent, Networ
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected CoreService coreService;
 
+    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
+    protected IntentService intentService;
+
+    /**
+     * Using reference to the inherited 'post' method is sufficient.
+     */
+    private final NetworkStoreDelegate delegate = this::post;
+
     protected ApplicationId applicationId;
-    public static final String HOST_FORMAT = "%s~%s";
-    public static final String KEY_FORMAT = "%s,%s";
+
+    private static final String HOST_FORMAT = "%s~%s";
+    private static final String KEY_FORMAT = "%s,%s";
 
     @Activate
     protected void activate() {
-        applicationId = coreService.registerApplication("org.cse.unl.netgroup");
-        log.info("Started org.cse.unl.netgroup");
+        applicationId = coreService.registerApplication("org.cse.unl.netgroup", this::removeAllIntents);
+        removeAllIntents();
+        /*
+         * Add the listener registry to the event dispatcher using eventDispatcher.addSink()
+         * Set the delegate in the store
+         */
+        eventDispatcher.addSink(NetworkEvent.class, listenerRegistry);
+        store.setDelegate(delegate);
+        log.info("Started Network Manager");
     }
 
-    @Deactivate void deactivate() {
+    // Remove all intents as part of application activation
+    private void removeAllIntents() {
+        Iterables.filter(intentService.getIntents(), i -> java.util.Objects.equals(i.appId(), applicationId))
+                .forEach(intentService::withdraw);
+    }
+
+    @Deactivate
+    void deactivate() {
         log.info("Stopped org.cse.unl.netgroup");
     }
 

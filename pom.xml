@@ -37,7 +37,7 @@
         <onos.app.url>http://cse.unl.edu/~netgroup</onos.app.url>
         <api.description>Sample application REST API</api.description>
         <web.context>/onos/OpenSec</web.context>
-        <api.title>Sample app REST API</api.title>
+        <api.title>OpenSec REST API</api.title>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <api.package>org.unl.cse.netgroup</api.package>
         <onos.app.readme>OpenSec ONOS OSGi bundle.</onos.app.readme>

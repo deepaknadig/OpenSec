@@ -21,7 +21,7 @@ import org.onlab.rest.AbstractWebApplication;
 import java.util.Set;
 
 /**
- * Sample REST API web application.
+ * OpenSec REST API web application.
  */
 public class AppWebApplication extends AbstractWebApplication {
     @Override

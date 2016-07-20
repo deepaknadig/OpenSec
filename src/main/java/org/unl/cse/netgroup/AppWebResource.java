@@ -25,9 +25,9 @@ import javax.ws.rs.core.Response;
 import static org.onlab.util.Tools.nullIsNotFound;
 
 /**
- * Sample web resource.
+ * OpenSec web resource.
  */
-@Path("v1")
+@Path("api")
 public class AppWebResource extends AbstractWebResource {
 
     /**

@@ -27,7 +27,7 @@ import static org.onlab.util.Tools.nullIsNotFound;
 /**
  * Sample web resource.
  */
-@Path("sample")
+@Path("v1")
 public class AppWebResource extends AbstractWebResource {
 
     /**
@@ -36,7 +36,7 @@ public class AppWebResource extends AbstractWebResource {
      * @return 200 OK
      */
     @GET
-    @Path("")
+    @Path("hello")
     public Response getGreeting() {
         ObjectNode node = mapper().createObjectNode().put("hello", "world");
         return ok(node).build();

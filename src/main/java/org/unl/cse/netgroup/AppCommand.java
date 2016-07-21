@@ -21,8 +21,8 @@ import org.onosproject.cli.AbstractShellCommand;
 /**
  * Sample Apache Karaf CLI command
  */
-@Command(scope = "opensec", name = "sample",
-         description = "Sample Apache Karaf CLI command")
+@Command(scope = "opensec", name = "info",
+         description = "OpenSec Apache Karaf CLI command")
 public class AppCommand extends AbstractShellCommand {
 
     @Override

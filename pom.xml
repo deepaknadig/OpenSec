@@ -21,7 +21,7 @@
 
     <groupId>org.unl.cse.netgroup</groupId>
     <artifactId>OpenSec</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <packaging>bundle</packaging>
 
     <description>OpenSec ONOS OSGi App Bundle</description>

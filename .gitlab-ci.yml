@@ -9,8 +9,11 @@ services:
 test:
   script:
   - sleep 10
+  - /root/onos/tools/dev/bin/onos-check-summary
   - git clone https://git.deepaknadig.com/deepak/OpenSec.git
   - cd OpenSec
   - mvn clean install
   - export HOST_IP="$(hostname --ip-address)"
+  - echo $HOST_IP
+  - ifconfig
   - /root/onos/tools/dev/bin/onos-app $HOST_IP install! /root/OpenSec/target/OpenSec-1.0.2.oar

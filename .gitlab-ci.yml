@@ -9,6 +9,7 @@ services:
 test:
   script:
   - sleep 10
+  - /root/onos/tools/dev/bin/onos-check-summary
   - git clone https://git.deepaknadig.com/deepak/OpenSec.git
   - cd OpenSec
   - mvn clean install

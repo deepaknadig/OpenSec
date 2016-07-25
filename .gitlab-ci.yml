@@ -1,22 +1,22 @@
 image: deepnadig/onos-dev
 
-services:
-  - onosproject/onos
+#services:
+#  - onosproject/onos
 #
 #before_script:
 #  - bundle install
 
 test:
   script:
-  - sleep 10
-  - /root/onos/tools/test/bin/onos-check-summary 172.17.0.2
-  - /root/onos/tools/test/bin/onos-check-summary 172.17.0.3
-#  - git clone https://git.deepaknadig.com/deepak/OpenSec.git
-#  - cd OpenSec
-#  - mvn clean install
-#  - export HOST_IP="$(hostname --ip-address)"
-#  - echo $HOST_IP
-#  - ifconfig
-#  - pwd
-#  - ls -al
-#  - /root/onos/tools/dev/bin/onos-app 172.17.0.2 install! target/OpenSec-1.0.2.oar
+  - /root/onos/tools/dev/bin/onos-karaf clean
+  - sleep 15
+  - echo $ONOS_IP
+  - git clone https://git.deepaknadig.com/deepak/OpenSec.git
+  - cd OpenSec
+  - mvn clean install
+  - export HOST_IP="$(hostname --ip-address)"
+  - echo $HOST_IP
+  - ifconfig
+  - pwd
+  - ls -al
+  - /root/onos/tools/dev/bin/onos-app $ONOS_IP install! target/OpenSec-1.0.2.oar

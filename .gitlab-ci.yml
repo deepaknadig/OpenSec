@@ -13,4 +13,4 @@ test:
   - cd OpenSec
   - mvn clean install
   - export HOST_IP="$(hostname --ip-address)"
-  - /root/onos/tools/dev/bin/onos-app 127.0.0.1 install! target/OpenSec-1.0.2.oar
+  - /root/onos/tools/dev/bin/onos-app onosproject__onos install! target/OpenSec-1.0.2.oar

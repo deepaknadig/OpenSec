@@ -8,7 +8,9 @@ services:
 
 test:
   script:
+  - sleep 10
   - git clone https://git.deepaknadig.com/deepak/OpenSec.git
   - cd OpenSec
   - mvn clean install
-  - /root/onos/tools/dev/bin/onos-app localhost install! /root/OpenSec/target/OpenSec-1.0.2.oar
+  - export HOST_IP=hostname --ip-address
+  - /root/onos/tools/dev/bin/onos-app $HOST_IP install! /root/OpenSec/target/OpenSec-1.0.2.oar

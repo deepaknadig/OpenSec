@@ -1,14 +1,13 @@
 image: deepnadig/onos-dev
 
-#services:
-#  - onosproject/onos
-#
+services:
+  - onosproject/onos
+
 #before_script:
 #  - bundle install
 
 test:
   script:
-  - /root/onos/tools/dev/bin/onos-karaf clean
   - sleep 15
   - echo $ONOS_IP
   - git clone https://git.deepaknadig.com/deepak/OpenSec.git

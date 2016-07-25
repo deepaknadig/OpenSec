@@ -12,5 +12,5 @@ test:
   - git clone https://git.deepaknadig.com/deepak/OpenSec.git
   - cd OpenSec
   - mvn clean install
-  - export HOST_IP=hostname --ip-address
+  - export HOST_IP="$(hostname --ip-address)"
   - /root/onos/tools/dev/bin/onos-app $HOST_IP install! /root/OpenSec/target/OpenSec-1.0.2.oar

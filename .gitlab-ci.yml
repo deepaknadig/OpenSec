@@ -1,0 +1,11 @@
+image: deepnadig/onos-dev
+
+services:
+  - onosproject/onos
+#
+#before_script:
+#  - bundle install
+
+test:
+  script:
+  - runapp.sh

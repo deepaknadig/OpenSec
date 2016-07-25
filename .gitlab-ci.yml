@@ -15,4 +15,6 @@ test:
   - export HOST_IP="$(hostname --ip-address)"
   - echo $HOST_IP
   - ifconfig
-  - /root/onos/tools/dev/bin/onos-app $HOST_IP install! target/OpenSec-1.0.2.oar
+  - pwd
+  - ls -al
+  - /root/onos/tools/dev/bin/onos-app 172.17.0.2 install! target/OpenSec-1.0.2.oar

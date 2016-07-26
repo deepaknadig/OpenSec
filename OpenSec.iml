@@ -2,11 +2,11 @@
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Osmorc" name="OSGi">
-      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="OpenSec-1.0.0.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.unl.cse.netgroup.OpenSec" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="OpenSec-1.0.2.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.unl.cse.netgroup.OpenSec" bundleVersion="1.0.2" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
         <additionalProperties>
           <property key="Bundle-Description" value="OpenSec ONOS OSGi App Bundle" />
           <property key="-wab" value="src/main/webapp/" />
-          <property key="Include-Resource" value="WEB-INF/classes/apidoc/swagger.json=$MODULE_DIR$/target/swagger.json,OSGI-INF/blueprint/shell-config.xml=$MODULE_DIR$/src/main/resources/OSGI-INF/blueprint/shell-config.xml" />
+          <property key="Include-Resource" value="WEB-INF/classes/apidoc/swagger.json=target/swagger.json,OSGI-INF/blueprint/shell-config.xml=$MODULE_DIR$/src/main/resources/OSGI-INF/blueprint/shell-config.xml" />
           <property key="Import-Package" value="*,org.glassfish.jersey.servlet" />
           <property key="Web-ContextPath" value="/onos/OpenSec" />
           <property key="Bundle-Name" value="OpenSec" />

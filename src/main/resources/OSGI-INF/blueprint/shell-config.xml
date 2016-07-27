@@ -28,6 +28,9 @@
         <command>
             <action class="org.unl.cse.netgroup.cli.RemoveNetworkCommand"/>
         </command>
+        <command>
+            <action class="org.unl.cse.netgroup.cli.AddHostCommand"/>
+        </command>
     </command-bundle>
 
 </blueprint>

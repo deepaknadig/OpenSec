@@ -25,6 +25,9 @@
         <command>
             <action class="org.unl.cse.netgroup.cli.ListNetworkCommand"/>
         </command>
+        <command>
+            <action class="org.unl.cse.netgroup.cli.RemoveNetworkCommand"/>
+        </command>
     </command-bundle>
 
 </blueprint>

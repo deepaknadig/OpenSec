@@ -22,6 +22,9 @@
         <command>
             <action class="org.unl.cse.netgroup.cli.CreateNetworkCmd"/>
         </command>
+        <command>
+            <action class="org.unl.cse.netgroup.cli.ListNetworkCommand"/>
+        </command>
     </command-bundle>
 
 </blueprint>

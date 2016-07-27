@@ -27,13 +27,30 @@
         </command>
         <command>
             <action class="org.unl.cse.netgroup.cli.RemoveNetworkCommand"/>
+            <completers>
+                <ref component-id="networkCompleter"/>
+                <null/>
+            </completers>
         </command>
         <command>
             <action class="org.unl.cse.netgroup.cli.AddHostCommand"/>
+            <completers>
+                <ref component-id="networkCompleter"/>
+                <ref component-id="hostCompleter"/>
+                <null/>
+            </completers>
         </command>
         <command>
             <action class="org.unl.cse.netgroup.cli.RemoveHostCommand"/>
+            <completers>
+                <ref component-id="networkCompleter"/>
+                <ref component-id="hostCompleter"/>
+                <null/>
+            </completers>
         </command>
     </command-bundle>
+
+    <bean id="networkCompleter" class="org.unl.cse.netgroup.cli.NetworkCompleter"/>
+    <bean id="hostCompleter" class="org.onosproject.cli.net.HostIdCompleter"/>
 
 </blueprint>

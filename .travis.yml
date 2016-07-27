@@ -1,14 +1,18 @@
-image: deepnadig/onos-dev
+sudo: required
+language: java
 
 services:
-  - onosproject/onos
+  - docker
+  
+before_install:
+- docker pull onosproject/onos
+- docker run -d onosproject/onos
+- docker ps -a
+- git clone https://git.deepaknadig.com/deepak/OpenSec.git
+- cd OpenSec
+- export ONOS_WEB_USER=onos
+- export ONOS_WEB_PASS=rocks
 
-test:
-  script:
-  - sleep 15
-  - export ONOS_WEB_USER=onos
-  - export ONOS_WEB_PASS=rocks
-  - git clone https://git.deepaknadig.com/deepak/OpenSec.git
-  - cd OpenSec
-  - mvn clean install
-  - /root/onos/tools/dev/bin/onos-app onosproject__onos install! target/OpenSec-1.0.2.oar
+script:
+- mvn clean install
+#~ - curl -sS --user $ONOS_WEB_USER:$ONOS_WEB_PASS -X POST -HContent-Type:application/octet-stream 127.0.0.1:8181/onos/v1/applications?activate=true --data-binary @target/OpenSec-1.0.2.oar

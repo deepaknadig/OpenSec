@@ -31,6 +31,9 @@
         <command>
             <action class="org.unl.cse.netgroup.cli.AddHostCommand"/>
         </command>
+        <command>
+            <action class="org.unl.cse.netgroup.cli.RemoveHostCommand"/>
+        </command>
     </command-bundle>
 
 </blueprint>

@@ -1,4 +1,4 @@
-image: deepnadig/onos-dev
+image: deepnadig/docker-onos-dev
 
 services:
   - onosproject/onos

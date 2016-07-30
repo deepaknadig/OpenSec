@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.unl.cse.netgroup;
+package org.unl.cse.netgroup.cli;
 
 import org.apache.karaf.shell.commands.Command;
 import org.onosproject.cli.AbstractShellCommand;
 
 /**
- * Sample Apache Karaf CLI command
+ * opensec:info command to provide help/info about OpenSec app
  */
 @Command(scope = "opensec", name = "info",
-         description = "OpenSec Apache Karaf CLI command")
-public class AppCommand extends AbstractShellCommand {
+         description = "OpenSec App Info command")
+public class InfoCommand extends AbstractShellCommand {
 
     @Override
     protected void execute() {
-        print("Hello %s", "World");
+        print("Help and Information about the OpenSec Application\n" +
+                      "Coming soon");
     }
 
 }

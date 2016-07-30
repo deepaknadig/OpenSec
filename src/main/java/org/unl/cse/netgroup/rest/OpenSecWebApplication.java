@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.unl.cse.netgroup;
+package org.unl.cse.netgroup.rest;
 
 import org.onlab.rest.AbstractWebApplication;
 
@@ -23,9 +23,9 @@ import java.util.Set;
 /**
  * OpenSec REST API web application.
  */
-public class AppWebApplication extends AbstractWebApplication {
+public class OpenSecWebApplication extends AbstractWebApplication {
     @Override
     public Set<Class<?>> getClasses() {
-        return getClasses(AppWebResource.class);
+        return getClasses(OpenSecWebResource.class);
     }
 }

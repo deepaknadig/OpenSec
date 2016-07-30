@@ -1,3 +1,3 @@
-target/
-.idea/
-OpenSec.iml
+/.idea/
+/OpenSec.iml
+/target/

@@ -1,8 +1,5 @@
 package org.unl.cse.netgroup;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -14,12 +11,14 @@ import org.onosproject.core.ApplicationId;
 import org.onosproject.core.CoreService;
 import org.onosproject.event.AbstractListenerManager;
 import org.onosproject.net.HostId;
+import org.onosproject.net.intent.HostToHostIntent;
 import org.onosproject.net.intent.Intent;
 import org.onosproject.net.intent.IntentService;
 import org.onosproject.net.intent.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -72,12 +71,14 @@ public class NetworkManager
 
     // Remove all intents as part of application activation
     private void removeAllIntents() {
-        Iterables.filter(intentService.getIntents(), i -> java.util.Objects.equals(i.appId(), applicationId))
+        Iterables.filter(intentService.getIntents(), i -> Objects.equals(i.appId(), applicationId))
                 .forEach(intentService::withdraw);
     }
 
     @Deactivate
-    void deactivate() {
+    protected void deactivate() {
+        eventDispatcher.removeSink(NetworkEvent.class);
+        store.unsetDelegate(delegate);
         log.info("Stopped org.cse.unl.netgroup");
     }
 
@@ -85,33 +86,50 @@ public class NetworkManager
     public void createNetwork(String network) {
         checkNotNull(network, "Network name cannot be null");
         checkState(!network.contains(","),"Network cannot contain commas.");
+
+        store.putNetwork(network);
     }
 
     @Override
     public void deleteNetwork(String network) {
         checkNotNull(network, "Network name cannot be null");
+
+        store.removeNetwork(network);
+        removeIntents(network, null);
     }
 
     @Override
     public Set<String> getNetworks() {
-        return ImmutableSet.of("my-network");
+        return store.getNetworks();
     }
 
     @Override
     public void addHost(String network, HostId hostId) {
         checkNotNull(network, "Network name cannot be null");
         checkNotNull(hostId, "HostId cannot be null");
+
+        boolean hostWasAdded = store.addHost(network, hostId);
+        if (hostWasAdded) {
+            addIntents(network, hostId, store.getHosts(network));
+        }
     }
 
+    @Override
     public void removeHost(String network, HostId hostId) {
         checkNotNull(network, "Network name cannot be null");
         checkNotNull(hostId, "HostId cannot be null");
+
+        boolean hostWasRemoved = store.removeHost(network, hostId);
+        if (hostWasRemoved) {
+            removeIntents(network, hostId);
+        }
     }
 
+    @Override
     public Set<HostId> getHosts(String network) {
         checkNotNull(network, "Network name cannot be null");
 
-        return ImmutableSet.of();
+        return store.getHosts(network);
     }
 
     /**
@@ -123,6 +141,17 @@ public class NetworkManager
      */
     private void addIntents(String network, HostId src, Set<HostId> hostsInNet) {
 
+        hostsInNet.forEach(dst -> {
+            if (!src.equals(dst)) {
+                Intent intent = HostToHostIntent.builder()
+                        .appId(applicationId)
+                        .key(generateKey(network, src, dst))
+                        .one(src)
+                        .two(dst)
+                        .build();
+                intentService.submit(intent);
+            }
+        });
     }
 
     /**
@@ -131,8 +160,9 @@ public class NetworkManager
      * @param network network name
      * @param hostId host to remove; all hosts if empty
      */
-    private void removeIntents(String network, Optional<HostId> hostIdOptional) {
-
+    private void removeIntents(String network,HostId hostId) {
+        Iterables.filter(intentService.getIntents(), i -> matches(network, hostId, i))
+                .forEach(intentService::withdraw);
     }
 
     /**
@@ -157,8 +187,8 @@ public class NetworkManager
      * @param intent intent to match
      * @return true if intent matches, false otherwise
      */
-    protected boolean matches(String network, Optional<HostId> hostIdOptional, Intent intent) {
-        if (!Objects.equal(applicationId, intent.appId())) {
+    protected boolean matches(String network, HostId hostId, Intent intent) {
+        if (!Objects.equals(applicationId, intent.appId())) {
             // Different App Ids
             return false;
         }
@@ -169,12 +199,11 @@ public class NetworkManager
             return false;
         }
 
-        if (!hostIdOptional.isPresent()) {
+        if (hostId == null) {
             // no host id specified; wildcard match
             return true;
         }
 
-        HostId hostId = hostIdOptional.get();
         String[] fields = key.split(",");
         // return result of id match in host portion of key
         return fields.length > 1 && fields[1].contains(hostId.toString());

@@ -17,23 +17,30 @@ package org.unl.cse.netgroup.rest;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.onosproject.net.Device;
+import org.onosproject.net.device.DeviceService;
+import org.onosproject.net.flow.FlowEntry;
+import org.onosproject.net.flow.FlowRuleService;
 import org.onosproject.net.topology.Topology;
 import org.onosproject.net.topology.TopologyService;
 import org.onosproject.rest.AbstractWebResource;
-import org.unl.cse.netgroup.NetworkService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Set;
 
 /**
  * OpenSec web resource.
  */
-@Path("api")
-public class OpenSecWebResource extends AbstractWebResource {
+@Path("monitor")
+public class OpenSecMonitorWebResource extends AbstractWebResource {
+
+    private final ObjectNode root = mapper().createObjectNode();
+    private final ArrayNode flowsNode = root.putArray(FLOWS);
+
+    private static final String FLOWS = "flows";
 
     /**
      * Get Help Information.
@@ -48,29 +55,24 @@ public class OpenSecWebResource extends AbstractWebResource {
     }
 
     /**
-     * Gets the Current topology
+     * List All Current Flows.
      *
-     * @return 200 OK with topology information
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("topology")
-    public Response getTopology() {
-        Topology topology = get(TopologyService.class).currentTopology();
-        ObjectNode root = codec(Topology.class).encode(topology, this);
-        return ok(root).build();
-    }
-
-    /**
-     *  Get the current flows information
-     *
-     *  @return 200 OK with all current active flow information
+     *  @return 200 OK with All current active flow information
      */
     @GET@Produces(MediaType.APPLICATION_JSON)
-    @Path("monitor/flows/all")
+    @Path("flows/all")
     public Response getFlows() {
-        ObjectNode node = mapper().createObjectNode().put("Flows", "Information");
-        return ok(node).build();
+        final Iterable<Device> devices = get(DeviceService.class).getDevices();
+        for (final Device device : devices) {
+            final Iterable<FlowEntry> flowEntries = get(FlowRuleService.class).getFlowEntries(device.id());
+            if (flowEntries != null) {
+                for (final FlowEntry entry : flowEntries) {
+                    flowsNode.add(codec(FlowEntry.class).encode(entry, this));
+                }
+            }
+        }
+
+        return ok(root).build();
     }
 
 }

@@ -26,6 +26,7 @@ import java.util.Set;
 public class OpenSecWebApplication extends AbstractWebApplication {
     @Override
     public Set<Class<?>> getClasses() {
-        return getClasses(OpenSecWebResource.class);
+        return getClasses(OpenSecWebResource.class,
+                          OpenSecMonitorWebResource.class);
     }
 }

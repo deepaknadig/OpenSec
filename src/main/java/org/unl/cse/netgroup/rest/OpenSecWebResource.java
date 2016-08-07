@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
 import java.util.Set;
 
 /**
- * OpenSec web resource.
+ * OpenSec REST APIs.
  */
 @Path("api")
 public class OpenSecWebResource extends AbstractWebResource {
@@ -48,7 +48,7 @@ public class OpenSecWebResource extends AbstractWebResource {
     }
 
     /**
-     * Gets the Current topology
+     * Gets the Current topology.
      *
      * @return 200 OK with topology information
      */
@@ -62,15 +62,22 @@ public class OpenSecWebResource extends AbstractWebResource {
     }
 
     /**
-     *  Get the current flows information
+     * Gets the current available networks.
      *
-     *  @return 200 OK with all current active flow information
+     * @return 200 OK with available networks inforamtion.
      */
-    @GET@Produces(MediaType.APPLICATION_JSON)
-    @Path("monitor/flows/all")
-    public Response getFlows() {
-        ObjectNode node = mapper().createObjectNode().put("Flows", "Information");
-        return ok(node).build();
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("topology/networks")
+    public Response getNetworks() {
+        ObjectNode mapper = mapper().createObjectNode();
+        ArrayNode node = mapper.putArray("Networks Available");
+        Set<String> networks = get(NetworkService.class).getNetworks();
+        for (String network : networks) {
+            node.add(network);
+        }
+
+        return ok(mapper).build();
     }
 
 }

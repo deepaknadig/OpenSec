@@ -17,12 +17,12 @@ package org.unl.cse.netgroup.rest;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.onosproject.codec.JsonCodec;
 import org.onosproject.net.Device;
 import org.onosproject.net.device.DeviceService;
 import org.onosproject.net.flow.FlowEntry;
 import org.onosproject.net.flow.FlowRuleService;
-import org.onosproject.net.topology.Topology;
-import org.onosproject.net.topology.TopologyService;
+import org.onosproject.net.statistic.Load;
 import org.onosproject.rest.AbstractWebResource;
 
 import javax.ws.rs.GET;
@@ -32,7 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * OpenSec web resource.
+ * Network Monitoring Resources for OpenSec.
  */
 @Path("monitor")
 public class OpenSecMonitorWebResource extends AbstractWebResource {
@@ -59,7 +59,8 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
      *
      *  @return 200 OK with All current active flow information
      */
-    @GET@Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("flows/all")
     public Response getFlows() {
         final Iterable<Device> devices = get(DeviceService.class).getDevices();
@@ -71,6 +72,22 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
                 }
             }
         }
+
+        return ok(root).build();
+    }
+
+    /**
+     * List All Current Flow Counts.
+     *
+     *  @return 200 OK with All current active flow count
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("flows/count")
+    public Response getFlowCount() {
+        ObjectNode root = mapper().createObjectNode();
+        int flowsCount = get(FlowRuleService.class).getFlowRuleCount();
+        root.put("Number of Flows Installed", flowsCount);
 
         return ok(root).build();
     }

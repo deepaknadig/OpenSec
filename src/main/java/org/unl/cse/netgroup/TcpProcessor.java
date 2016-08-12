@@ -26,6 +26,7 @@ import org.onosproject.net.packet.PacketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Timer;
 
@@ -37,6 +38,9 @@ import java.util.Timer;
 public class TcpProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(TcpProcessor.class);
+
+    private static final String MSG_TCP_TRANSMISSION = "TCP Packet Transmission detected between " + "{} and {} by {}";
+    private static final String MSG_TCP_TRANSMISSION2 = "TCP2";
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected CoreService coreService;
@@ -92,13 +96,16 @@ public class TcpProcessor {
         MacAddress dst = ethernet.getDestinationMAC();
         TcpRecord tcp = new TcpRecord(src, dst);
         boolean tcped = tcps.get(deviceId).contains(tcp);
+//        logger.info(String.valueOf(tcped));
 
         if (tcped) {
             // TCP packet transmissions detected
-
+            logger.warn(MSG_TCP_TRANSMISSION, new Object[]{src, dst, deviceId});
+            installTcpRules(); // TODO: Update the rule installation
         }
         else {
             // Do something
+            logger.warn(MSG_TCP_TRANSMISSION2, new Object[]{src, dst, deviceId});
         }
     }
 
@@ -107,11 +114,12 @@ public class TcpProcessor {
         // TODO: create a TCP flow rule installer for the src/dst pair
     }
 
-    private class TcpFlowListener implements FlowRuleListener {
-        @Override
-        public void event(FlowRuleEvent event) {
+    // Checks whether the packet is a specified TCP packet
+    private boolean isTcpPacket(Ethernet ethernet) {
+//        logger.info(String.valueOf(((IPv4) ethernet.getPayload()).getProtocol()));
+        return ethernet.getEtherType() == Ethernet.TYPE_IPV4 &&
+                ((IPv4) ethernet.getPayload()).getProtocol() == IPv4.PROTOCOL_TCP;
 
-        }
     }
 
     private class TcpRecord {
@@ -122,13 +130,43 @@ public class TcpProcessor {
             this.src = src;
             this.dst = dst;
         }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(src, dst);
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) {
+                return true;
+            }
+            if (object == null || getClass() != object.getClass()) {
+                return false;
+            }
+            final TcpRecord other = (TcpRecord) object;
+            return Objects.equals(this.src, other.src) && Objects.equals(this.dst, other.dst);
+        }
     }
 
     private class TcpPacketProcessor implements PacketProcessor {
 
         @Override
         public void process(PacketContext context) {
+            Ethernet ethernet = context.inPacket().parsed();
+            if (isTcpPacket(ethernet)) {
+                processTcp(context, ethernet);
+            }
+        }
+    }
 
+    private class TcpFlowListener implements FlowRuleListener {
+        @Override
+        public void event(FlowRuleEvent event) {
+            FlowRule flowRule = event.subject();
+            if (event.type() == FlowRuleEvent.Type.RULE_ADDED && flowRule.appId() == applicationId.id()) {
+                logger.warn("Rule Added");
+            }
         }
     }
 }

@@ -69,7 +69,7 @@ public class TcpProcessor {
 
     private static final int PRIORITY = 128;
     private static final int DROP_PRIORITY = 129;
-    private long tempCountHolder = 0;
+    private long tempCountHolder;
 
 
     @Activate
@@ -109,10 +109,21 @@ public class TcpProcessor {
         TcpRecord tcpRecord = new TcpRecord(src, dst, pktCount);
         boolean tcpRecordExists = tcpHashMultimap.get(deviceId).contains(tcpRecord);
 
+        // Create a Set to read tcpHashMultimap records.
+        Set<TcpRecord> recordReader;
+        recordReader = tcpHashMultimap.get(deviceId);
+
         if (tcpRecordExists) {
             // TCP packet transmissions detected, Perform an action on the detected flow.
-            logger.debug(MSG_TCP_TRANSMISSION, new Object[]{src, dst, deviceId});
+//            logger.info(MSG_TCP_TRANSMISSION, new Object[]{src, dst, deviceId});
             if (packetIncrement) {
+
+                for (TcpRecord record1 : recordReader) {
+                    if (record1.equals(tcpRecord)) {
+                        tempCountHolder = record1.pktCount;
+                    }
+                }
+
                 tempCountHolder += 1;
                 tcpRecord.pktCount = tempCountHolder;
 
@@ -123,19 +134,18 @@ public class TcpProcessor {
 
             installFlowRules(); // TODO: Update the rule installation
 
-            Set<TcpRecord> recordReader;
-            recordReader = tcpHashMultimap.get(deviceId);
-
             for(TcpRecord record : recordReader){
                 logger.info(" Source: " + record.src
                                     + " Dest: " + record.dst
                                     + " PktCount: " + record.pktCount);
             }
 
+
+
         }
         else {
             // Otherwise, Add TCP Record to the HashMultiMap
-            logger.debug(MSG_TCP_TRANSMISSION, new Object[]{srcip, dstip, deviceId});
+//            logger.info(MSG_TCP_TRANSMISSION, new Object[]{srcip, dstip, deviceId});
             tcpHashMultimap.put(deviceId, tcpRecord);
         }
     }
@@ -147,7 +157,6 @@ public class TcpProcessor {
 
     // Checks whether the packet is a specified TCP packet
     private boolean isTcpPacket(Ethernet ethernet) {
-//        logger.info(String.valueOf(((IPv4) ethernet.getPayload()).getProtocol()));
         int payloadLength = ((IPv4) ethernet.getPayload()).getTotalLength();
         if (payloadLength >= 64 && ((IPv4) ethernet.getPayload()).getProtocol() == IPv4.PROTOCOL_TCP) {
             return ethernet.getEtherType() == Ethernet.TYPE_IPV4;

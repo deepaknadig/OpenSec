@@ -18,4 +18,4 @@ before_install:
 
 script:
 - mvn clean install
-- curl -sS --user $ONOS_WEB_USER:$ONOS_WEB_PASS -X POST -HContent-Type:application/octet-stream $D_IP:8181/onos/v1/applications?activate=true --data-binary @target/OpenSec-1.0.2.oar
+- curl -sS --user $ONOS_WEB_USER:$ONOS_WEB_PASS -X POST -HContent-Type:application/octet-stream $D_IP:8181/onos/v1/applications?activate=true --data-binary @target/OpenSec-1.0.3.oar

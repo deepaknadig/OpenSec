@@ -11,4 +11,4 @@ test:
   - git clone https://git.deepaknadig.com/deepak/OpenSec.git
   - cd OpenSec
   - mvn clean install
-  - /root/onos/tools/dev/bin/onos-app onosproject__onos install! target/OpenSec-1.0.2.oar
+  - /root/onos/tools/dev/bin/onos-app onosproject__onos install! target/OpenSec-1.0.3.oar

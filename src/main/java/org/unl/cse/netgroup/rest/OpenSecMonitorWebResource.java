@@ -17,14 +17,11 @@ package org.unl.cse.netgroup.rest;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.onosproject.codec.JsonCodec;
 import org.onosproject.net.Device;
 import org.onosproject.net.device.DeviceService;
 import org.onosproject.net.device.PortStatistics;
 import org.onosproject.net.flow.FlowEntry;
 import org.onosproject.net.flow.FlowRuleService;
-import org.onosproject.net.statistic.Load;
-import org.onosproject.net.statistic.StatisticService;
 import org.onosproject.rest.AbstractWebResource;
 
 import javax.ws.rs.GET;
@@ -193,7 +190,8 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
      *
      * @return 200 OK with switch packet error statistics
      */
-    @GET@Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("flows/packet-error-stats")
     public Response getErrorStatistics() {
         ObjectNode root = mapper().createObjectNode();

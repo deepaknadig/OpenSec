@@ -118,9 +118,9 @@ public class TcpProcessor {
 //            logger.info(MSG_TCP_TRANSMISSION, new Object[]{src, dst, deviceId});
             if (packetIncrement) {
 
-                for (TcpRecord record1 : recordReader) {
-                    if (record1.equals(tcpRecord)) {
-                        tempCountHolder = record1.pktCount;
+                for (TcpRecord record : recordReader) {
+                    if (record.equals(tcpRecord)) {
+                        tempCountHolder = record.pktCount;
                     }
                 }
 
@@ -133,15 +133,7 @@ public class TcpProcessor {
             }
 
             installFlowRules(); // TODO: Update the rule installation
-
-            for(TcpRecord record : recordReader){
-                logger.info(" Source: " + record.src
-                                    + " Dest: " + record.dst
-                                    + " PktCount: " + record.pktCount);
-            }
-
-
-
+            printStatistics(deviceId);
         }
         else {
             // Otherwise, Add TCP Record to the HashMultiMap
@@ -165,7 +157,7 @@ public class TcpProcessor {
 
     }
 
-    private class TcpRecord {
+    public class TcpRecord {
         private final MacAddress src;
         private final MacAddress dst;
         private long pktCount;
@@ -207,6 +199,19 @@ public class TcpProcessor {
         }
     }
 
+    private void printStatistics(DeviceId deviceId) {
+
+        Set<TcpRecord> recordReader;
+        recordReader = tcpHashMultimap.get(deviceId);
+
+        // Print all TCP records
+        for(TcpRecord record : recordReader){
+            logger.info(" Source: " + record.src
+                                + " Dest: " + record.dst
+                                + " PktCount: " + record.pktCount);
+        }
+    }
+
     private class TcpFlowListener implements FlowRuleListener {
         @Override
         public void event(FlowRuleEvent event) {
@@ -216,4 +221,9 @@ public class TcpProcessor {
             }
         }
     }
+
+    public HashMultimap<DeviceId, TcpRecord> getTcpHashMultimap() {
+        return tcpHashMultimap;
+    }
+
 }

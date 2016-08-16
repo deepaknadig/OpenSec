@@ -6,6 +6,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.Service;
 import org.onlab.packet.Ethernet;
 import org.onlab.packet.IPv4;
 import org.onlab.packet.IpAddress;
@@ -27,6 +28,7 @@ import org.onosproject.net.packet.PacketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -37,7 +39,8 @@ import java.util.Timer;
  */
 
 @Component(immediate = true)
-public class TcpProcessor {
+@Service
+public class TcpProcessor implements TcpProcessorService {
 
     private static Logger logger = LoggerFactory.getLogger(TcpProcessor.class);
 
@@ -71,6 +74,8 @@ public class TcpProcessor {
     private static final int DROP_PRIORITY = 129;
     private long tempCountHolder;
 
+    private Set<TcpRecord> recordReader;
+
 
     @Activate
     public void activate() {
@@ -93,7 +98,7 @@ public class TcpProcessor {
     }
 
     // Process TCP Packets
-    private void processTcp(PacketContext context, Ethernet ethernet, boolean packetIncrement) {
+    public void processTcp(PacketContext context, Ethernet ethernet, boolean packetIncrement) {
         DeviceId deviceId = context.inPacket().receivedFrom().deviceId();
         MacAddress src = ethernet.getSourceMAC();
         MacAddress dst = ethernet.getDestinationMAC();
@@ -201,7 +206,6 @@ public class TcpProcessor {
 
     private void printStatistics(DeviceId deviceId) {
 
-        Set<TcpRecord> recordReader;
         recordReader = tcpHashMultimap.get(deviceId);
 
         // Print all TCP records
@@ -224,6 +228,22 @@ public class TcpProcessor {
 
     public HashMultimap<DeviceId, TcpRecord> getTcpHashMultimap() {
         return tcpHashMultimap;
+    }
+
+    public Set<TcpRecord> getRecordReader() {
+        return recordReader;
+    }
+
+    @Override
+    public Set<String> transmissionInfo() {
+        Set<String> results = new HashSet<>();
+
+        Set<TcpRecord> records = getRecordReader();
+
+        for (TcpRecord record : records) {
+            results.add("Source: " + record.src + ", Destination: " + record.dst + ", PktCount: " + record.pktCount);
+        }
+        return results;
     }
 
 }

@@ -18,17 +18,22 @@ package org.unl.cse.netgroup.rest;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.onosproject.net.Device;
+import org.onosproject.net.DeviceId;
 import org.onosproject.net.device.DeviceService;
 import org.onosproject.net.device.PortStatistics;
 import org.onosproject.net.flow.FlowEntry;
 import org.onosproject.net.flow.FlowRuleService;
 import org.onosproject.rest.AbstractWebResource;
+import org.unl.cse.netgroup.TcpProcessor;
+import org.unl.cse.netgroup.TcpProcessor.TcpRecord;
+import org.unl.cse.netgroup.TcpProcessorService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Set;
 
 /**
  * Network Monitoring Resources for OpenSec.
@@ -226,6 +231,32 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
             statsRoot.put("totalSentPacketsDropped", totalSentPacketsDropped);
             statsRoot.put("totalRecvPacketErrors", totalRecvPacketErrors);
             statsRoot.put("totalSentPacketErrors", totalRecvPacketErrors);
+            statsArray.add(statsRoot);
+        }
+
+        return ok(root).build();
+    }
+
+    /**
+     * List TCP Transmission Statistics for all Devices.
+     *
+     * @return 200 OK with tcp transmission statistics
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("tcp")
+    public Response getTcpStatistics() {
+
+        TcpProcessorService processor = get(TcpProcessorService.class);
+        Set<String> records = processor.transmissionInfo();
+
+        ObjectNode root = mapper().createObjectNode();
+        final ArrayNode statsArray = root.putArray("tcp-transmission-stats");
+
+        for (final String record : records) {
+            final ObjectNode statsRoot = mapper().createObjectNode();
+            statsRoot.put("Record", record);
+
             statsArray.add(statsRoot);
         }
 

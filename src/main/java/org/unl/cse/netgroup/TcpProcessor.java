@@ -226,10 +226,12 @@ public class TcpProcessor implements TcpProcessorService {
         }
     }
 
+    @Override
     public HashMultimap<DeviceId, TcpRecord> getTcpHashMultimap() {
         return tcpHashMultimap;
     }
 
+    @Override
     public Set<TcpRecord> getRecordReader() {
         return recordReader;
     }

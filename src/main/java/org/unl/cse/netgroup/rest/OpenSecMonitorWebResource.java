@@ -17,6 +17,7 @@ package org.unl.cse.netgroup.rest;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.HashMultimap;
 import org.onosproject.net.Device;
 import org.onosproject.net.DeviceId;
 import org.onosproject.net.device.DeviceService;
@@ -24,7 +25,6 @@ import org.onosproject.net.device.PortStatistics;
 import org.onosproject.net.flow.FlowEntry;
 import org.onosproject.net.flow.FlowRuleService;
 import org.onosproject.rest.AbstractWebResource;
-import org.unl.cse.netgroup.TcpProcessor;
 import org.unl.cse.netgroup.TcpProcessor.TcpRecord;
 import org.unl.cse.netgroup.TcpProcessorService;
 
@@ -258,6 +258,43 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
             statsRoot.put("Record", record);
 
             statsArray.add(statsRoot);
+        }
+
+        return ok(root).build();
+    }
+
+    /**
+     * List TCP All Transmission Statistic Records.
+     *
+     * @return 200 OK with tcp transmission records
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("tcp/records")
+    public Response getTcpRecords() {
+
+        TcpProcessorService processor = get(TcpProcessorService.class);
+        HashMultimap<DeviceId, TcpRecord> map = processor.getTcpHashMultimap();
+
+        ObjectNode root = mapper().createObjectNode();
+        final ArrayNode rootArray = root.putArray("tcp-transmission-stats");
+
+        for (DeviceId id : map.keys()) {
+            final ObjectNode keysRoot = mapper().createObjectNode();
+            keysRoot.put("DeviceId", String.valueOf(id));
+
+            final ArrayNode keysArray = keysRoot.putArray("devices");
+            for (TcpRecord records : map.get(id)) {
+                final ObjectNode valuesRoot = mapper().createObjectNode();
+                valuesRoot.put("Record", records.toString());
+
+                final ArrayNode valuesArray = valuesRoot.putArray("records");
+                valuesArray.add(keysRoot);
+
+            }
+
+
+            keysArray.add(rootArray);
         }
 
         return ok(root).build();

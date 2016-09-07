@@ -167,6 +167,18 @@ public class TcpProcessor implements TcpProcessorService {
         private final MacAddress dst;
         private long pktCount;
 
+        public MacAddress getSrc() {
+            return src;
+        }
+
+        public MacAddress getDst() {
+            return dst;
+        }
+
+        public long getPktCount() {
+            return pktCount;
+        }
+
         public TcpRecord(MacAddress src, MacAddress dst, long pktCount) {
             this.src = src;
             this.dst = dst;

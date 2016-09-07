@@ -33,6 +33,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -237,65 +240,75 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         return ok(root).build();
     }
 
+//    /**
+//     * List TCP Transmission Statistics for all Devices.
+//     *
+//     * @return 200 OK with tcp transmission statistics
+//     */
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Path("tcp")
+//    public Response getTcpStatistics() {
+//
+//        TcpProcessorService processor = get(TcpProcessorService.class);
+//        Set<String> records = processor.transmissionInfo();
+//
+//        ObjectNode root = mapper().createObjectNode();
+//        final ArrayNode statsArray = root.putArray("tcp-transmission-stats");
+//
+//        for (final String record : records) {
+//            final ObjectNode statsRoot = mapper().createObjectNode();
+//            statsRoot.put("Record", record);
+//
+//            statsArray.add(statsRoot);
+//        }
+//
+//        return ok(root).build();
+//    }
+
     /**
      * List TCP Transmission Statistics for all Devices.
      *
      * @return 200 OK with tcp transmission statistics
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("tcp")
-    public Response getTcpStatistics() {
-
-        TcpProcessorService processor = get(TcpProcessorService.class);
-        Set<String> records = processor.transmissionInfo();
-
+    public Response getTcpTwo() {
         ObjectNode root = mapper().createObjectNode();
-        final ArrayNode statsArray = root.putArray("tcp-transmission-stats");
+        root.put("measurement", "gridftp-transfers");
 
-        for (final String record : records) {
-            final ObjectNode statsRoot = mapper().createObjectNode();
-            statsRoot.put("Record", record);
+        ObjectNode tagContents = mapper().createObjectNode();
+        tagContents.put("host", "server01");
+        tagContents.put("region", "us-midwest");
 
-            statsArray.add(statsRoot);
-        }
-
-        return ok(root).build();
-    }
-
-    /**
-     * List TCP All Transmission Statistic Records.
-     *
-     * @return 200 OK with tcp transmission records
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("tcp/records")
-    public Response getTcpRecords() {
+        root.set("tags",tagContents);
+        ObjectNode fieldContents = mapper().createObjectNode();
 
         TcpProcessorService processor = get(TcpProcessorService.class);
         HashMultimap<DeviceId, TcpRecord> map = processor.getTcpHashMultimap();
 
-        ObjectNode root = mapper().createObjectNode();
-        final ArrayNode rootArray = root.putArray("tcp-transmission-stats");
-
         for (DeviceId id : map.keys()) {
-            final ObjectNode keysRoot = mapper().createObjectNode();
-            keysRoot.put("DeviceId", String.valueOf(id));
+            ObjectNode switchesContents = mapper().createObjectNode();
+            ObjectNode deviceContents = mapper().createObjectNode();
 
-            final ArrayNode keysArray = keysRoot.putArray("devices");
-            for (TcpRecord records : map.get(id)) {
-                final ObjectNode valuesRoot = mapper().createObjectNode();
-                valuesRoot.put("Record", records.toString());
-
-                final ArrayNode valuesArray = valuesRoot.putArray("records");
-                valuesArray.add(keysRoot);
+            for (Map.Entry<DeviceId, Collection<TcpRecord>> entry : map.asMap().entrySet()) {
+                DeviceId d = entry.getKey();
+                Collection<TcpRecord> v = entry.getValue();
+                ArrayNode deviceContentArray = deviceContents.putArray("Devices");
+                for (TcpRecord t : v) {
+                    deviceContentArray.add(String.valueOf(t.getSrc()));
+                    deviceContentArray.add(String.valueOf(t.getDst()));
+                    deviceContentArray.add(String.valueOf(t.getPktCount()));
+                }
 
             }
-
-
-            keysArray.add(rootArray);
+            switchesContents.set(String.valueOf(id), deviceContents);
+            fieldContents.set("Devices", switchesContents);
         }
+
+        fieldContents.put("field1", 9);
+        fieldContents.put("field2", 0.64);
+        root.set("fields", fieldContents);
 
         return ok(root).build();
     }

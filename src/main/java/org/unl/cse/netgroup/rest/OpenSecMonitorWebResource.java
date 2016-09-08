@@ -334,9 +334,16 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         try {
             ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
             JsonNode specifiedSrcHost = jsonTree.get("srchost");
+
+            if (specifiedSrcHost != null) {
+                throw new IllegalArgumentException("Invalid Src Address in post request");
+            }
+            jsonTree.put("srchost", specifiedSrcHost);
+
         } catch (IOException e) {
-            throw new IOException(e);
+            throw new IllegalArgumentException(e);
         }
+
         return Response.ok(root).build();
     }
 

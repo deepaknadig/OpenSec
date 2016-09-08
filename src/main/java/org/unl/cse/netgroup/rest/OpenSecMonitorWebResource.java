@@ -15,6 +15,7 @@
  */
 package org.unl.cse.netgroup.rest;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.HashMultimap;
@@ -28,11 +29,15 @@ import org.onosproject.rest.AbstractWebResource;
 import org.unl.cse.netgroup.TcpProcessor.TcpRecord;
 import org.unl.cse.netgroup.TcpProcessorService;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -311,6 +316,28 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         root.set("fields", fieldContents);
 
         return ok(root).build();
+    }
+
+    /**
+     * Obtains GridFTP transfer information
+     * Instructions description:
+     * <br>
+     * Criteria description:
+     *
+     * @return status of the request - CREATED if the JSON is correct,
+     * BAD_REQUEST if the JSON is invalid
+     */
+    @POST
+    @Path("tcp")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postedFlows(InputStream stream) throws IOException {
+        try {
+            ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
+            JsonNode specifiedSrcHost = jsonTree.get("srchost");
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+        return Response.ok(root).build();
     }
 
 }

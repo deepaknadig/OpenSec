@@ -26,6 +26,8 @@ import org.onosproject.net.device.PortStatistics;
 import org.onosproject.net.flow.FlowEntry;
 import org.onosproject.net.flow.FlowRuleService;
 import org.onosproject.rest.AbstractWebResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unl.cse.netgroup.TcpProcessor.TcpRecord;
 import org.unl.cse.netgroup.TcpProcessorService;
 
@@ -39,9 +41,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Network Monitoring Resources for OpenSec.
@@ -53,6 +53,8 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     private final ArrayNode flowsNode = root.putArray(FLOWS);
     final DeviceService deviceService = get(DeviceService.class);
     final FlowRuleService flowRuleService = getService(FlowRuleService.class);
+
+    private static Logger log = LoggerFactory.getLogger(OpenSecMonitorWebResource.class);
 
     private static final String FLOWS = "flows";
 
@@ -304,6 +306,7 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
                     deviceContentArray.add(String.valueOf(t.getSrc()));
                     deviceContentArray.add(String.valueOf(t.getDst()));
                     deviceContentArray.add(String.valueOf(t.getPktCount()));
+                    deviceContentArray.add(String.valueOf(t.getByteCount()));
                 }
 
             }
@@ -329,16 +332,18 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
      */
     @POST
     @Path("tcp")
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postedFlows(InputStream stream) throws IOException {
         try {
             ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
             JsonNode specifiedSrcHost = jsonTree.get("srchost");
 
-            if (specifiedSrcHost != null) {
+            if (specifiedSrcHost == null) {
                 throw new IllegalArgumentException("Invalid Src Address in post request");
             }
-            jsonTree.put("srchost", specifiedSrcHost);
+
+            log.info("SRCADDR: " + String.valueOf(specifiedSrcHost));
 
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
@@ -346,5 +351,8 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
 
         return Response.ok(root).build();
     }
+
+
+
 
 }

@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Created by Deepak Nadig Anantha <deepnadig@gmail.com> on 8/15/16.
  */
-public interface TcpProcessorService {
+public interface TcpProcessorService extends ListenerService<NetworkEvent, NetworkListener> {
 
     /**
      * Get TCP Transmission Statistics.

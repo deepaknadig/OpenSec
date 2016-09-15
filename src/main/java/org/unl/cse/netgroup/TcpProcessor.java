@@ -13,6 +13,7 @@ import org.onlab.packet.IpAddress;
 import org.onlab.packet.MacAddress;
 import org.onosproject.core.ApplicationId;
 import org.onosproject.core.CoreService;
+import org.onosproject.event.AbstractListenerManager;
 import org.onosproject.net.DeviceId;
 import org.onosproject.net.flow.DefaultTrafficSelector;
 import org.onosproject.net.flow.FlowRule;
@@ -40,7 +41,7 @@ import java.util.Timer;
 
 @Component(immediate = true)
 @Service
-public class TcpProcessor implements TcpProcessorService {
+public class TcpProcessor extends AbstractListenerManager<NetworkEvent, NetworkListener> implements TcpProcessorService {
 
     private static Logger logger = LoggerFactory.getLogger(TcpProcessor.class);
 
@@ -73,6 +74,7 @@ public class TcpProcessor implements TcpProcessorService {
     private static final int PRIORITY = 128;
     private static final int DROP_PRIORITY = 129;
     private long tempCountHolder;
+    private long tempByteHolder;
 
     private Set<TcpRecord> recordReader;
 
@@ -98,11 +100,12 @@ public class TcpProcessor implements TcpProcessorService {
     }
 
     // Process TCP Packets
-    public void processTcp(PacketContext context, Ethernet ethernet, boolean packetIncrement) {
+    public void processTcp(PacketContext context, Ethernet ethernet, boolean packetIncrement, long payloadLength) {
         DeviceId deviceId = context.inPacket().receivedFrom().deviceId();
         MacAddress src = ethernet.getSourceMAC();
         MacAddress dst = ethernet.getDestinationMAC();
         long pktCount = 0;
+        long byteCount = 0;
 
         IPv4 ippayload = (IPv4) ethernet.getPayload();
         int srcaddr = ippayload.getSourceAddress();
@@ -111,7 +114,7 @@ public class TcpProcessor implements TcpProcessorService {
         IpAddress dstip = IpAddress.valueOf(dstaddr);
 
 
-        TcpRecord tcpRecord = new TcpRecord(src, dst, pktCount);
+        TcpRecord tcpRecord = new TcpRecord(src, dst, pktCount, byteCount);
         boolean tcpRecordExists = tcpHashMultimap.get(deviceId).contains(tcpRecord);
 
         // Create a Set to read tcpHashMultimap records.
@@ -126,11 +129,14 @@ public class TcpProcessor implements TcpProcessorService {
                 for (TcpRecord record : recordReader) {
                     if (record.equals(tcpRecord)) {
                         tempCountHolder = record.pktCount;
+                        tempByteHolder = record.byteCount;
                     }
                 }
 
                 tempCountHolder += 1;
+                tempByteHolder += payloadLength;
                 tcpRecord.pktCount = tempCountHolder;
+                tcpRecord.byteCount += tempByteHolder;
 
                 tcpHashMultimap.remove(deviceId, tcpRecord);
                 tcpHashMultimap.put(deviceId, tcpRecord);
@@ -166,6 +172,7 @@ public class TcpProcessor implements TcpProcessorService {
         private final MacAddress src;
         private final MacAddress dst;
         private long pktCount;
+        private long byteCount;
 
         public MacAddress getSrc() {
             return src;
@@ -179,10 +186,15 @@ public class TcpProcessor implements TcpProcessorService {
             return pktCount;
         }
 
-        public TcpRecord(MacAddress src, MacAddress dst, long pktCount) {
+        public long getByteCount() {
+            return byteCount;
+        }
+
+        public TcpRecord(MacAddress src, MacAddress dst, long pktCount, long byteCount) {
             this.src = src;
             this.dst = dst;
             this.pktCount = pktCount;
+            this.byteCount = byteCount;
         }
 
         @Override
@@ -211,7 +223,8 @@ public class TcpProcessor implements TcpProcessorService {
             Ethernet ethernet = context.inPacket().parsed();
             if (isTcpPacket(ethernet)) {
                 packetCountIncr = true;
-                processTcp(context, ethernet, packetCountIncr);
+                long payloadLength = ((IPv4) ethernet.getPayload()).getTotalLength();
+                processTcp(context, ethernet, packetCountIncr, payloadLength);
             }
         }
     }
@@ -224,7 +237,8 @@ public class TcpProcessor implements TcpProcessorService {
         for(TcpRecord record : recordReader){
             logger.info(" Source: " + record.src
                                 + " Dest: " + record.dst
-                                + " PktCount: " + record.pktCount);
+                                + " PktCount: " + record.pktCount
+                                + " ByteCount: " + record.byteCount);
         }
     }
 

@@ -337,13 +337,21 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     public Response postedFlows(InputStream stream) throws IOException {
         try {
             ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
-            JsonNode specifiedSrcHost = jsonTree.get("srchost");
+            JsonNode srchost = jsonTree.get("srchost");
+            JsonNode dsthost = jsonTree.get("dsthost");
+            JsonNode srcport = jsonTree.get("srcport");
+            JsonNode dstport = jsonTree.get("dstport");
 
-            if (specifiedSrcHost == null) {
-                throw new IllegalArgumentException("Invalid Src Address in post request");
+
+
+            if (srchost == null || dsthost == null || srcport == null || dstport == null) {
+                throw new IllegalArgumentException("Invalid configuration parameters");
             }
 
-            log.info("SRCADDR: " + String.valueOf(specifiedSrcHost));
+            log.info("SA: " + String.valueOf(srchost) +
+                    "DA: " + String.valueOf(dsthost) +
+                    "SP: " + String.valueOf(srcport) +
+                    "DP: " + String.valueOf(dstport));
 
         } catch (IOException e) {
             throw new IllegalArgumentException(e);

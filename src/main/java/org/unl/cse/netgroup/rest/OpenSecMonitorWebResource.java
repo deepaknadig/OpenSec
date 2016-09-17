@@ -28,6 +28,7 @@ import org.onosproject.net.flow.FlowRuleService;
 import org.onosproject.rest.AbstractWebResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.unl.cse.netgroup.GridFtpInfo;
 import org.unl.cse.netgroup.TcpProcessor.TcpRecord;
 import org.unl.cse.netgroup.TcpProcessorService;
 
@@ -335,6 +336,9 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postedFlows(InputStream stream) throws IOException {
+
+        GridFtpInfo ftpInfo = jsonToGridftp(stream);
+
         try {
             ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
             JsonNode srchost = jsonTree.get("srchost");
@@ -360,7 +364,27 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         return Response.ok(root).build();
     }
 
+    private GridFtpInfo jsonToGridftp(InputStream stream) {
+        JsonNode node;
+        try {
+            node = mapper().readTree(stream);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to parse GridFTP application POST request.", e);
+        }
 
+        String srchost = node.path("srchost").asText(null);
+        String dsthost = node.path("dsthost").asText(null);
+        String srcport = node.path("srcport").asText(null);
+        String dstport = node.path("dstport").asText(null);
+        String username = node.path("username").asText(null);
+
+        if (srchost != null && dsthost != null && srcport != null && dstport != null && username != null) {
+            return new GridFtpInfo(srchost, dsthost, srcport, dstport, username);
+        }
+        else {
+            throw new IllegalArgumentException("Arguments cannot be null");
+        }
+    }
 
 
 }

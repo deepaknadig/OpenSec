@@ -280,7 +280,7 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
      * @return 200 OK with tcp transmission statistics
      */
     @GET
-    @Path("tcp")
+    @Path("tcpinfo")
     public Response getTcpTwo() {
         ObjectNode root = mapper().createObjectNode();
         root.put("measurement", "gridftp-transfers");
@@ -338,6 +338,7 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     public Response postedFlows(InputStream stream) throws IOException {
 
         GridFtpInfo ftpInfo = jsonToGridftp(stream);
+        ftpInfo.printInfo();
 
         try {
             ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);

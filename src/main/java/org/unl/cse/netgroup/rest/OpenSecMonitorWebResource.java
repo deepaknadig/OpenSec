@@ -338,7 +338,7 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     public Response postedFlows(InputStream stream) throws IOException {
 
         GridFtpInfo ftpInfo = jsonToGridftp(stream);
-        ftpInfo.printInfo();
+        ftpInfo.logInfo();
 
         try {
             ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
@@ -378,9 +378,10 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         String srcport = node.path("srcport").asText(null);
         String dstport = node.path("dstport").asText(null);
         String username = node.path("username").asText(null);
+        String event = node.path("event").asText(null);
 
-        if (srchost != null && dsthost != null && srcport != null && dstport != null && username != null) {
-            return new GridFtpInfo(srchost, dsthost, srcport, dstport, username);
+        if (srchost != null && dsthost != null && srcport != null && dstport != null && username != null && event != null) {
+            return new GridFtpInfo(srchost, dsthost, srcport, dstport, username, event);
         }
         else {
             throw new IllegalArgumentException("Arguments cannot be null");

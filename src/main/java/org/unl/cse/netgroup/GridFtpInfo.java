@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -28,6 +29,12 @@ public class GridFtpInfo {
     private HashSet<String> element = new HashSet<>();
     private StringBuilder elementBuilder = new StringBuilder();
 
+    private long transfersUsCmsPool;
+    private long transfersCmsProd;
+    private long transfersLcgAdmin;
+    private long transfersCmsPhedex;
+    private long transfersOthers;
+
 
     public GridFtpInfo(String srchost,
                        String dsthost,
@@ -41,30 +48,6 @@ public class GridFtpInfo {
         this.dstport = dstport;
         this.username = username;
         this.event = event;
-    }
-
-    public String getSrchost() {
-        return srchost;
-    }
-
-    public String getDsthost() {
-        return dsthost;
-    }
-
-    public String getSrcport() {
-        return srcport;
-    }
-
-    public String getDstport() {
-        return dstport;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEvent() {
-        return event;
     }
 
     public void logInfo() {
@@ -84,15 +67,12 @@ public class GridFtpInfo {
                 .append(":").append(this.dstport);
         element.add(elementBuilder.toString());
 
-        if (this.event.equals("STARTUP")) {
+        // TODO Exception Handling
+        if (this.event.equals("STARTUP") || this.event.equals("UPDATE")) {
             if (this.username.matches("uscms(.*)")) {
                 usCmsPoolMap.put(this.username, elementBuilder.toString());
-//                log.info("USCMSPOOL: " + usCmsPoolMap);
-//                log.info("USCMSPOOL keySet " + String.valueOf(usCmsPoolMap.keySet().size()));
-//                log.info("USCMSPOOL asMap " + String.valueOf(usCmsPoolMap.asMap().size()));
-//                log.info("USCMSPOOL Size " + String.valueOf(usCmsPoolMap.size()));
-//                log.info("USCMSPOOL Entries " + String.valueOf(usCmsPoolMap.entries().size()));
 
+//                log.info("USCMSPOOL Entries " + String.valueOf(usCmsPoolMap.entries().size()));
             } else if (this.username.matches("cmsprod(.*)")) {
                 cmsProdlMap.put(this.username, element);
 
@@ -111,7 +91,36 @@ public class GridFtpInfo {
 //                log.info("OTHERS: " + String.valueOf(otherMap.entries().size()));
             }
         }
+        else if (this.event.equals("SHUTDOWN")) {
+            if (this.username.matches("uscms(.*)")) {
+                usCmsPoolMap.remove(this.username, elementBuilder.toString());
+            } else if (this.username.matches("cmsprod(.*)")) {
+                cmsProdlMap.remove(this.username, element);
+            } else if (this.username.matches("lcgadmin(.*)")) {
+                lcgAdminMap.remove(this.username, element);
+            } else if (this.username.matches("cmsphedex(.*)")) {
+                cmsPhedexMap.remove(this.username, element);
+            } else {
+                otherMap.remove(this.username, element);
+            }
+        }
 
+    }
+
+    public HashMap<String, Long> transferInfo() {
+        transfersUsCmsPool = usCmsPoolMap.size();
+        transfersCmsProd = cmsProdlMap.size();
+        transfersLcgAdmin = lcgAdminMap.size();
+        transfersCmsPhedex = cmsPhedexMap.size();
+        transfersOthers = otherMap.size();
+
+        HashMap<String, Long> transferStatsList = new HashMap<>();
+        transferStatsList.put("USCMSPOOL", transfersUsCmsPool);
+        transferStatsList.put("CMSPROD", transfersCmsProd);
+        transferStatsList.put("LCGADMIN", transfersLcgAdmin);
+        transferStatsList.put("CMSPHEDEX", transfersCmsPhedex);
+        transferStatsList.put("OTHERS", transfersOthers);
+        return transferStatsList;
     }
 
 

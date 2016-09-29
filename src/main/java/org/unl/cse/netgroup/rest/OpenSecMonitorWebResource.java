@@ -338,16 +338,19 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postedFlows(InputStream stream) throws IOException {
     // TODO Exception Handling
-        try {
-            ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+//        try {
+//            ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
+//        } catch (IOException e) {
+//            throw new IllegalArgumentException(e);
+//        }
 
         ftpInfo = jsonToGridftp(stream);
         //ftpInfo.logInfo();
-        //ftpInfo.testCode();
-        log.info(ftpInfo.transferInfo().toString());
+        ftpInfo.testCode();
+
+
+
+        //log.info(ftpInfo.transferInfo().toString());
 
         return Response.ok(root).build();
     }
@@ -373,6 +376,39 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         else {
             throw new IllegalArgumentException("Arguments cannot be null");
         }
+    }
+
+    /**
+     * List GridFTP Transmission Statistics for all Servers.
+     *
+     * @return 200 OK with gridftp transmission statistics
+     */
+    @GET
+    @Path("grid-transfer-stats")
+    public Response getGridTransferStats() {
+        ObjectNode root = mapper().createObjectNode();
+        root.put("measurement", "gridftp-stats");
+
+        ObjectNode tagContents = mapper().createObjectNode();
+        tagContents.put("host", "red");
+        tagContents.put("region", "us-midwest");
+
+        root.set("tags",tagContents);
+        ObjectNode fieldContents = mapper().createObjectNode();
+
+        // TODO Needs GridFtpInfoService Interface for access
+        // The code below won't return anything
+        GridFtpInfo ftpInfo = get(GridFtpInfo.class);
+
+        fieldContents.put("USCMSPOOL", ftpInfo.transferInfo().get("USCMSPOOL"));
+        fieldContents.put("CMSPROD", ftpInfo.transferInfo().get("CMSPROD"));
+        fieldContents.put("LCGADMIN", ftpInfo.transferInfo().get("LCGADMIN"));
+        fieldContents.put("CMSPHEDEX", ftpInfo.transferInfo().get("CMSPHEDEX"));
+        fieldContents.put("OTHERS", ftpInfo.transferInfo().get("OTHERS"));
+
+        root.set("fields", fieldContents);
+
+        return ok(root).build();
     }
 
 

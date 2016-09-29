@@ -6,6 +6,7 @@ services:
   - docker
 
 before_install:
+- rm ~/.m2
 - docker pull onosproject/onos
 - CID=$(docker run -d onosproject/onos)
 - docker ps -a

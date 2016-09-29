@@ -70,6 +70,7 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     private long totalSentPacketsDropped;
     private long totalRecvPacketErrors;
     private long totalSentPacketErrors;
+    private static GridFtpInfo ftpInfo;
 
     /**
      * Get Help Information.
@@ -336,31 +337,34 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postedFlows(InputStream stream) throws IOException {
+    // TODO Exception Handling
 
-        GridFtpInfo ftpInfo = jsonToGridftp(stream);
+
+        ftpInfo = jsonToGridftp(stream);
         ftpInfo.logInfo();
+        ftpInfo.testCode();
 
-        try {
-            ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
-            JsonNode srchost = jsonTree.get("srchost");
-            JsonNode dsthost = jsonTree.get("dsthost");
-            JsonNode srcport = jsonTree.get("srcport");
-            JsonNode dstport = jsonTree.get("dstport");
-
-
-
-            if (srchost == null || dsthost == null || srcport == null || dstport == null) {
-                throw new IllegalArgumentException("Invalid configuration parameters");
-            }
-
-            log.info("SA: " + String.valueOf(srchost) +
-                    "DA: " + String.valueOf(dsthost) +
-                    "SP: " + String.valueOf(srcport) +
-                    "DP: " + String.valueOf(dstport));
-
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+//        try {
+//            ObjectNode jsonTree = (ObjectNode) mapper().readTree(stream);
+//            JsonNode srchost = jsonTree.get("srchost");
+//            JsonNode dsthost = jsonTree.get("dsthost");
+//            JsonNode srcport = jsonTree.get("srcport");
+//            JsonNode dstport = jsonTree.get("dstport");
+//
+//
+//
+//            if (srchost == null || dsthost == null || srcport == null || dstport == null) {
+//                throw new IllegalArgumentException("Invalid configuration parameters");
+//            }
+//
+//            log.info("SA: " + String.valueOf(srchost) +
+//                    "DA: " + String.valueOf(dsthost) +
+//                    "SP: " + String.valueOf(srcport) +
+//                    "DP: " + String.valueOf(dstport));
+//
+//        } catch (IOException e) {
+//            throw new IllegalArgumentException(e);
+//        }
 
         return Response.ok(root).build();
     }

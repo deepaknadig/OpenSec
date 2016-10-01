@@ -384,10 +384,10 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
      * @return 200 OK with gridftp transmission statistics
      */
     @GET
-    @Path("grid-transfer-stats")
-    public Response getGridTransferStats() {
+    @Path("gridftp-streams")
+    public Response getGridFtpStreams() {
         ObjectNode root = mapper().createObjectNode();
-        root.put("measurement", "gridftp-stats");
+        root.put("measurement", "gridftp-streams");
 
         ObjectNode tagContents = mapper().createObjectNode();
         tagContents.put("host", "red");
@@ -397,14 +397,41 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         ObjectNode fieldContents = mapper().createObjectNode();
 
         // TODO Needs GridFtpInfoService Interface for access
-        // The code below won't return anything
-        GridFtpInfo ftpInfo = get(GridFtpInfo.class);
+        fieldContents.put("USCMSPOOL", ftpInfo.transferInfoByStreams().get("USCMSPOOL"));
+        fieldContents.put("CMSPROD", ftpInfo.transferInfoByStreams().get("CMSPROD"));
+        fieldContents.put("LCGADMIN", ftpInfo.transferInfoByStreams().get("LCGADMIN"));
+        fieldContents.put("CMSPHEDEX", ftpInfo.transferInfoByStreams().get("CMSPHEDEX"));
+        fieldContents.put("OTHERS", ftpInfo.transferInfoByStreams().get("OTHERS"));
 
-        fieldContents.put("USCMSPOOL", ftpInfo.transferInfo().get("USCMSPOOL"));
-        fieldContents.put("CMSPROD", ftpInfo.transferInfo().get("CMSPROD"));
-        fieldContents.put("LCGADMIN", ftpInfo.transferInfo().get("LCGADMIN"));
-        fieldContents.put("CMSPHEDEX", ftpInfo.transferInfo().get("CMSPHEDEX"));
-        fieldContents.put("OTHERS", ftpInfo.transferInfo().get("OTHERS"));
+        root.set("fields", fieldContents);
+
+        return ok(root).build();
+    }
+
+    /**
+     * List GridFTP Users for all Servers.
+     *
+     * @return 200 OK with gridftp user statistics
+     */
+    @GET
+    @Path("gridftp-users")
+    public Response getGridTransferStats() {
+        ObjectNode root = mapper().createObjectNode();
+        root.put("measurement", "gridftp-users");
+
+        ObjectNode tagContents = mapper().createObjectNode();
+        tagContents.put("host", "red");
+        tagContents.put("region", "us-midwest");
+
+        root.set("tags",tagContents);
+        ObjectNode fieldContents = mapper().createObjectNode();
+
+        // TODO Needs GridFtpInfoService Interface for access
+        fieldContents.put("USCMSPOOL", ftpInfo.transferInfoByUsers().get("USCMSPOOL"));
+        fieldContents.put("CMSPROD", ftpInfo.transferInfoByUsers().get("CMSPROD"));
+        fieldContents.put("LCGADMIN", ftpInfo.transferInfoByUsers().get("LCGADMIN"));
+        fieldContents.put("CMSPHEDEX", ftpInfo.transferInfoByUsers().get("CMSPHEDEX"));
+        fieldContents.put("OTHERS", ftpInfo.transferInfoByUsers().get("OTHERS"));
 
         root.set("fields", fieldContents);
 

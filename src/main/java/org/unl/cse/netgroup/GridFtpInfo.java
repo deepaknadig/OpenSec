@@ -35,6 +35,12 @@ public class GridFtpInfo {
     private long transfersCmsPhedex;
     private long transfersOthers;
 
+    private long streamsUsCmsPool;
+    private long streamsCmsProd;
+    private long streamsLcgAdmin;
+    private long streamsCmsPhedex;
+    private long streamsOthers;
+
 
     public GridFtpInfo(String srchost,
                        String dsthost,
@@ -107,21 +113,39 @@ public class GridFtpInfo {
 
     }
 
-    public HashMap<String, Long> transferInfo() {
-        transfersUsCmsPool = usCmsPoolMap.size();
-        transfersCmsProd = cmsProdlMap.size();
-        transfersLcgAdmin = lcgAdminMap.size();
-        transfersCmsPhedex = cmsPhedexMap.size();
-        transfersOthers = otherMap.size();
+    public HashMap<String, Long> transferInfoByStreams() {
+        streamsUsCmsPool = usCmsPoolMap.size();
+        streamsCmsProd = cmsProdlMap.size();
+        streamsLcgAdmin = lcgAdminMap.size();
+        streamsCmsPhedex = cmsPhedexMap.size();
+        streamsOthers = otherMap.size();
 
-        HashMap<String, Long> transferStatsList = new HashMap<>();
-        transferStatsList.put("USCMSPOOL", transfersUsCmsPool);
-        transferStatsList.put("CMSPROD", transfersCmsProd);
-        transferStatsList.put("LCGADMIN", transfersLcgAdmin);
-        transferStatsList.put("CMSPHEDEX", transfersCmsPhedex);
-        transferStatsList.put("OTHERS", transfersOthers);
-        return transferStatsList;
+        HashMap<String, Long> streamStatsMap = new HashMap<>();
+        streamStatsMap.put("USCMSPOOL", streamsUsCmsPool);
+        streamStatsMap.put("CMSPROD", streamsCmsProd);
+        streamStatsMap.put("LCGADMIN", streamsLcgAdmin);
+        streamStatsMap.put("CMSPHEDEX", streamsCmsPhedex);
+        streamStatsMap.put("OTHERS", streamsOthers);
+        return streamStatsMap;
     }
+
+    public HashMap<String, Long> transferInfoByUsers() {
+        transfersUsCmsPool = usCmsPoolMap.keySet().size();
+        transfersCmsProd = cmsProdlMap.keySet().size();
+        transfersLcgAdmin = lcgAdminMap.keySet().size();
+        transfersCmsPhedex = cmsPhedexMap.keySet().size();
+        transfersOthers = otherMap.keySet().size();
+
+        HashMap<String, Long> transferStatsMap = new HashMap<>();
+        transferStatsMap.put("USCMSPOOL", transfersUsCmsPool);
+        transferStatsMap.put("CMSPROD", transfersCmsProd);
+        transferStatsMap.put("LCGADMIN", transfersLcgAdmin);
+        transferStatsMap.put("CMSPHEDEX", transfersCmsPhedex);
+        transferStatsMap.put("OTHERS", transfersOthers);
+        return transferStatsMap;
+    }
+
+
 
 
 }

@@ -28,7 +28,7 @@
     <url>http://cse.unl.edu/~netgroup</url>
 
     <properties>
-        <onos.version>1.7.0</onos.version>
+        <onos.version>1.9.0</onos.version>
         <api.version>1.0.3</api.version>
         <onos.app.name>org.unl.cse.netgroup</onos.app.name>
         <onos.app.title>OpenSec ONOS Application</onos.app.title>

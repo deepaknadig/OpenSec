@@ -179,10 +179,10 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
             statsRoot.put("device", device.id().toString());
 
             final ArrayNode bytesArray = statsRoot.putArray("ports");
-            final Iterable<PortStatistics> portStatisticses = deviceService.getPortStatistics(device.id());
+            final Iterable<PortStatistics> portStatistics = deviceService.getPortStatistics(device.id());
 
-            if (portStatisticses != null) {
-                for (final PortStatistics portStatistic : portStatisticses) {
+            if (portStatistics != null) {
+                for (final PortStatistics portStatistic : portStatistics) {
                     ObjectNode inner = mapper().createObjectNode();
                     inner.put("port", portStatistic.port());
                     inner.put("bytesReceived", portStatistic.bytesReceived());
@@ -369,9 +369,10 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         String dstport = node.path("dstport").asText(null);
         String username = node.path("username").asText(null);
         String event = node.path("event").asText(null);
+        String filename = node.path("filename").asText(null);
 
-        if (srchost != null && dsthost != null && srcport != null && dstport != null && username != null && event != null) {
-            return new GridFtpInfo(srchost, dsthost, srcport, dstport, username, event);
+        if (srchost != null && dsthost != null && srcport != null && dstport != null && username != null && event != null && filename !=null) {
+            return new GridFtpInfo(srchost, dsthost, srcport, dstport, username, event, filename);
         }
         else {
             throw new IllegalArgumentException("Arguments cannot be null");
@@ -402,6 +403,7 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         fieldContents.put("LCGADMIN", ftpInfo.transferInfoByStreams().get("LCGADMIN"));
         fieldContents.put("CMSPHEDEX", ftpInfo.transferInfoByStreams().get("CMSPHEDEX"));
         fieldContents.put("OTHERS", ftpInfo.transferInfoByStreams().get("OTHERS"));
+        fieldContents.put("LIGO", ftpInfo.transferInfoByStreams().get("LIGO"));
 
         root.set("fields", fieldContents);
 

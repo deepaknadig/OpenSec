@@ -17,6 +17,7 @@ public class GridFtpInfo {
     private String dstport;
     private String username;
     private String event;
+    private String filename;
 
     private static Logger log = LoggerFactory.getLogger(GridFtpInfo.class);
 
@@ -25,6 +26,7 @@ public class GridFtpInfo {
     private static HashMultimap<String, HashSet<String>> lcgAdminMap = HashMultimap.create();
     private static HashMultimap<String, HashSet<String>> cmsPhedexMap = HashMultimap.create();
     private static HashMultimap<String, HashSet<String>> otherMap = HashMultimap.create();
+    private static HashMultimap<String, HashSet<String>> ligoMap = HashMultimap.create();
 
     private HashSet<String> element = new HashSet<>();
     private StringBuilder elementBuilder = new StringBuilder();
@@ -40,6 +42,7 @@ public class GridFtpInfo {
     private long streamsLcgAdmin;
     private long streamsCmsPhedex;
     private long streamsOthers;
+    private long streamsLigo;
 
 
     public GridFtpInfo(String srchost,
@@ -47,13 +50,15 @@ public class GridFtpInfo {
                        String srcport,
                        String dstport,
                        String username,
-                       String event) {
+                       String event,
+                       String filename) {
         this.srchost = srchost;
         this.dsthost = dsthost;
         this.srcport = srcport;
         this.dstport = dstport;
         this.username = username;
         this.event = event;
+        this.filename = filename;
     }
 
     public void logInfo() {
@@ -62,8 +67,9 @@ public class GridFtpInfo {
                     .append(":").append(this.srcport)
                     .append(" -> ").append(this.dsthost)
                     .append(":").append(this.dstport)
-                    .append(" ").append(this.event);
-        //log.info(sb.toString());
+                    .append(" ").append(this.event)
+                    .append(" ").append(this.filename);
+        log.info(sb.toString());
     }
 
     public void testCode() {
@@ -91,6 +97,10 @@ public class GridFtpInfo {
                 cmsPhedexMap.put(this.username, element);
 
 //                log.info("CMSPHEDEX " + String.valueOf(cmsPhedexMap.entries().size()));
+            } else if (this.username.matches("ligo(.*)")) {
+                ligoMap.put(this.username, element);
+
+//                log.info("LIGO " + String.valueOf(ligoMap.entries().size()));
             } else {
                 otherMap.put(this.username, element);
 
@@ -106,6 +116,8 @@ public class GridFtpInfo {
                 lcgAdminMap.remove(this.username, element);
             } else if (this.username.matches("cmsphedex(.*)")) {
                 cmsPhedexMap.remove(this.username, element);
+            } else if (this.username.matches("ligo(.*)")) {
+                ligoMap.remove(this.username, element);
             } else {
                 otherMap.remove(this.username, element);
             }
@@ -119,6 +131,7 @@ public class GridFtpInfo {
         streamsLcgAdmin = lcgAdminMap.size();
         streamsCmsPhedex = cmsPhedexMap.size();
         streamsOthers = otherMap.size();
+        streamsLigo = ligoMap.size();
 
         HashMap<String, Long> streamStatsMap = new HashMap<>();
         streamStatsMap.put("USCMSPOOL", streamsUsCmsPool);

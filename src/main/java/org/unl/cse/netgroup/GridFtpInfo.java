@@ -35,6 +35,7 @@ public class GridFtpInfo {
     private long transfersCmsProd;
     private long transfersLcgAdmin;
     private long transfersCmsPhedex;
+    private long transfersLigo;
     private long transfersOthers;
 
     private long streamsUsCmsPool;
@@ -138,6 +139,7 @@ public class GridFtpInfo {
         streamStatsMap.put("CMSPROD", streamsCmsProd);
         streamStatsMap.put("LCGADMIN", streamsLcgAdmin);
         streamStatsMap.put("CMSPHEDEX", streamsCmsPhedex);
+        streamStatsMap.put("LIGO", streamsLigo);
         streamStatsMap.put("OTHERS", streamsOthers);
         return streamStatsMap;
     }
@@ -147,6 +149,7 @@ public class GridFtpInfo {
         transfersCmsProd = cmsProdlMap.keySet().size();
         transfersLcgAdmin = lcgAdminMap.keySet().size();
         transfersCmsPhedex = cmsPhedexMap.keySet().size();
+        transfersLigo = ligoMap.keySet().size();
         transfersOthers = otherMap.keySet().size();
 
         HashMap<String, Long> transferStatsMap = new HashMap<>();
@@ -154,6 +157,7 @@ public class GridFtpInfo {
         transferStatsMap.put("CMSPROD", transfersCmsProd);
         transferStatsMap.put("LCGADMIN", transfersLcgAdmin);
         transferStatsMap.put("CMSPHEDEX", transfersCmsPhedex);
+        transferStatsMap.put("LIGO", transfersLigo);
         transferStatsMap.put("OTHERS", transfersOthers);
         return transferStatsMap;
     }

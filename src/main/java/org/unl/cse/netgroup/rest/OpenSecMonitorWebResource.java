@@ -402,8 +402,8 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         fieldContents.put("CMSPROD", ftpInfo.transferInfoByStreams().get("CMSPROD"));
         fieldContents.put("LCGADMIN", ftpInfo.transferInfoByStreams().get("LCGADMIN"));
         fieldContents.put("CMSPHEDEX", ftpInfo.transferInfoByStreams().get("CMSPHEDEX"));
-        fieldContents.put("OTHERS", ftpInfo.transferInfoByStreams().get("OTHERS"));
         fieldContents.put("LIGO", ftpInfo.transferInfoByStreams().get("LIGO"));
+        fieldContents.put("OTHERS", ftpInfo.transferInfoByStreams().get("OTHERS"));
 
         root.set("fields", fieldContents);
 
@@ -433,6 +433,7 @@ public class OpenSecMonitorWebResource extends AbstractWebResource {
         fieldContents.put("CMSPROD", ftpInfo.transferInfoByUsers().get("CMSPROD"));
         fieldContents.put("LCGADMIN", ftpInfo.transferInfoByUsers().get("LCGADMIN"));
         fieldContents.put("CMSPHEDEX", ftpInfo.transferInfoByUsers().get("CMSPHEDEX"));
+        fieldContents.put("LIGO", ftpInfo.transferInfoByUsers().get("LIGO"));
         fieldContents.put("OTHERS", ftpInfo.transferInfoByUsers().get("OTHERS"));
 
         root.set("fields", fieldContents);

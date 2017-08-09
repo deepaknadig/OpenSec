@@ -21,7 +21,7 @@ public class GridFtpInfo {
 
     private static Logger log = LoggerFactory.getLogger(GridFtpInfo.class);
 
-    private static HashMultimap<String, String> usCmsPoolMap = HashMultimap.create();
+    private static HashMultimap<String, HashSet<String>> usCmsPoolMap = HashMultimap.create();
     private static HashMultimap<String, HashSet<String>> cmsProdlMap = HashMultimap.create();
     private static HashMultimap<String, HashSet<String>> lcgAdminMap = HashMultimap.create();
     private static HashMultimap<String, HashSet<String>> cmsPhedexMap = HashMultimap.create();
@@ -83,7 +83,7 @@ public class GridFtpInfo {
         // TODO Exception Handling
         if (this.event.equals("STARTUP") || this.event.equals("UPDATE")) {
             if (this.username.matches("uscms(.*)")) {
-                usCmsPoolMap.put(this.username, elementBuilder.toString());
+                usCmsPoolMap.put(this.username, element);
 
 //                log.info("USCMSPOOL Entries " + String.valueOf(usCmsPoolMap.entries().size()));
             } else if (this.username.matches("cmsprod(.*)")) {

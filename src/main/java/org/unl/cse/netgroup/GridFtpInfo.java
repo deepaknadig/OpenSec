@@ -63,14 +63,18 @@ public class GridFtpInfo {
     }
 
     public void logInfo() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.username).append(" ").append(this.srchost)
-                    .append(":").append(this.srcport)
-                    .append(" -> ").append(this.dsthost)
-                    .append(":").append(this.dstport)
-                    .append(" ").append(this.event)
-                    .append(" ").append(this.filename);
-        log.info(sb.toString());
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(this.username).append(" ").append(this.srchost)
+//                    .append(":").append(this.srcport)
+//                    .append(" -> ").append(this.dsthost)
+//                    .append(":").append(this.dstport)
+//                    .append(" ").append(this.event)
+//                    .append(" ").append(this.filename);
+//        log.info(sb.toString());
+
+        for (String s : lcgAdminMap.keys()) {
+            log.info(s + ": " + lcgAdminMap.get(s));
+        }
     }
 
     public void testCode() {
@@ -81,7 +85,7 @@ public class GridFtpInfo {
         element.add(elementBuilder.toString());
 
         // TODO Exception Handling
-        if (this.event.equals("STARTUP") || this.event.equals("UPDATE")) {
+        if (this.event.equals("STARTUP")) { // || this.event.equals("UPDATE")) {
             if (this.username.matches("uscms(.*)")) {
                 usCmsPoolMap.put(this.username, element);
 
@@ -110,7 +114,7 @@ public class GridFtpInfo {
         }
         else if (this.event.equals("SHUTDOWN")) {
             if (this.username.matches("uscms(.*)")) {
-                usCmsPoolMap.remove(this.username, elementBuilder.toString());
+                usCmsPoolMap.remove(this.username, element);
             } else if (this.username.matches("cmsprod(.*)")) {
                 cmsProdlMap.remove(this.username, element);
             } else if (this.username.matches("lcgadmin(.*)")) {
